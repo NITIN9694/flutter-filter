@@ -1,13 +1,12 @@
 //pub
 //firebase_auth: ^4.2.4
-//  firebase_core: ^2.4.1
+//firebase_core: ^2.4.1
+
+final FirebaseAuth auth = FirebaseAuth.instance;
 
 
-
-
-///mobile auth
+//fitrbsdr phone auth
 signInWithPhoneNumber() async {
-  progressDialog.show();
   await auth.verifyPhoneNumber(
     phoneNumber: countryCode.value + mobileNumString.value,
     timeout: const Duration(seconds: 30),
@@ -44,22 +43,6 @@ signInWithPhoneNumber() async {
   );
 }
 
-///check otp is valid or not
-isValidOtp() async {
-  if (otpNumber.isEmpty && otpNumber.value.length < 6) {
-    
-   print(message: "please enter min 6 digit otp");
-  } else {
-    PhoneAuthCredential _credential = PhoneAuthProvider.credential(
-        verificationId: verifyId.value, smsCode: otpNumber.value);
-    await auth.signInWithCredential(_credential).then((user) async {
-      Get.toNamed(Routes.createAccount);
-    }).catchError((error) {
-      print(error);
-      handleException(error);
-    });
-  }
-}
 
 ///resend otp
 resendOtp() async {
@@ -85,6 +68,8 @@ resendOtp() async {
     },
   );
 }
+
+
 
 /*--------Exception Handel-------------*/
 void handleException(Exception e) {
@@ -137,5 +122,22 @@ void handleException(Exception e) {
     }
   } else {
    print( "error_default");
+  }
+}
+
+
+///check otp is valid or not
+isValidOtp() async {
+  if (otpNumber.isEmpty && otpNumber.value.length < 6) {
+    
+   print(message: "please enter min 6 digit otp");
+  } else {
+    PhoneAuthCredential _credential = PhoneAuthProvider.credential(
+        verificationId: verifyId.value, smsCode: otpNumber.value);
+    await auth.signInWithCredential(_credential).then((user) async {
+    }).catchError((error) {
+      print(error);
+      handleException(error);
+    });
   }
 }
